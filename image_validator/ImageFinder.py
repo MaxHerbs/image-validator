@@ -48,8 +48,10 @@ class ImageFinder:
             typer.echo("The following image paths are invalid:")
             for path in self.invalid_image_paths:
                 typer.echo(path)
-        else:
-            typer.echo("All image paths are valid!")
+            return True
+        
+        typer.echo("All image paths are valid!")
+        return False
 
         
 
