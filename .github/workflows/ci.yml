@@ -29,6 +29,6 @@ jobs:
       #   run: |
       #     poetry run pytest tests/  # Assuming your tests are in the "tests" directory
 
-      - name: Lint Code
+      - name: Run Test
         run: |
           poetry run image-validator validate
