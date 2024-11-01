@@ -16,6 +16,7 @@ class ImageFinder:
 
     def validate(self) -> bool:
         self.populate_paths()
+        print(self.files_to_search)
         typer.echo(f"Found {len(self.files_to_search)} files to look inside.")
 
 
@@ -65,10 +66,12 @@ class ImageFinder:
         active_dirs = self.descriptor["directories"]
 
         for dir in active_dirs:
-            self.dir_walk(dir["dir"], dir.pop("file_types", ["*"]))
+            self.dir_walk(dir["dir"], dir.pop("fileTypes", ["*"]))
 
 
     def dir_walk(self, dir: str, file_types: list) -> None:
+        print("Looking in", dir)
+        print("File types", file_types)
         curr_dir = os.listdir(dir)
         for file in curr_dir:
             file_path = dir + "/" + file
