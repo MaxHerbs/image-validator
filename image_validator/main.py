@@ -37,4 +37,8 @@ def validate(
     typer.echo("Validating images...")
     imageFinder = ImageFinder(configManager.config)
     success = imageFinder.validate()
-    return success
+    
+    if not success:
+        typer.echo("Validation failed.")
+        raise typer.Exit(code=1)
+    return True

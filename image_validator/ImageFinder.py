@@ -14,7 +14,7 @@ class ImageFinder:
     def __init__(self, descriptor: dict):
         self.descriptor = descriptor
 
-    def validate(self) -> bool:
+    def validate(self) -> int:
         self.populate_paths()
         print(self.files_to_search)
         typer.echo(f"Found {len(self.files_to_search)} files to look inside.")
@@ -48,10 +48,10 @@ class ImageFinder:
             typer.echo("The following image paths are invalid:")
             for path in self.invalid_image_paths:
                 typer.echo(path)
-            return True
+            return 0
         
         typer.echo("All image paths are valid!")
-        return False
+        return 1
 
         
 
