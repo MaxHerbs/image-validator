@@ -25,10 +25,6 @@ jobs:
         run: |
           poetry install
 
-      # - name: Run Tests
-      #   run: |
-      #     poetry run pytest tests/  # Assuming your tests are in the "tests" directory
-
       - name: Run Test
         run: |
           poetry run image-validator validate
