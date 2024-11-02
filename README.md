@@ -27,3 +27,6 @@ Run the script with:
 ```bash
 $ image-validator validate -p path/to/your/config
 ```
+
+# TODO:
+1. Add more search methods. The current regex approach limits the search to html-like images.
