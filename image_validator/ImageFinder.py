@@ -20,13 +20,13 @@ class ImageFinder:
 
         searchEngine = SearchMethods(requestedSearches, files_to_search)
       
-        print(f"Detected {len(searchEngine.detected_image_paths)} image paths")
+        print(f"Detected {len(searchEngine.detected_paths)} image paths")
 
         img_dir_base = self.descriptor["imgBasePath"]
         if not img_dir_base.endswith("/"):
             img_dir_base += "/"
 
-        detected_image_paths = [img_dir_base + path[1::] for path in searchEngine.detected_image_paths]
+        detected_image_paths = [img_dir_base + path[1::] for path in searchEngine.detected_paths]
 
         invalid_paths = self.validate_image_paths(detected_image_paths)
         if invalid_paths:
