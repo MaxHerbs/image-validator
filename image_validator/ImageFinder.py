@@ -25,7 +25,7 @@ class ImageFinder:
       
         print(f"Detected {len(searchEngine.detected_image_paths)} image paths")
 
-        img_dir_base = self.descriptor["imgbasePath"]
+        img_dir_base = self.descriptor["imgBasePath"]
         if not img_dir_base.endswith("/"):
             img_dir_base += "/"
 

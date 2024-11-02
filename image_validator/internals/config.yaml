@@ -1,4 +1,4 @@
-imgbasePath: "." # Base path for images
+imgBasePath: "." # Base path for images
 
 searchTypes: # List of supported search types
   - regex
