@@ -5,23 +5,20 @@ from .SearchMethods import SearchMethods
 
 class ImageFinder:
     files_to_search = []
-    detected_image_paths = []
-    invalid_image_paths = []
-
 
     def __init__(self, descriptor: dict):
         self.descriptor = descriptor
 
     def validate(self) -> int:
-        self.populate_paths()
-        print(self.files_to_search)
-        typer.echo(f"Found {len(self.files_to_search)} files to look inside.")
+        files_to_search = self.populate_paths()
+        print(files_to_search)
+        typer.echo(f"Found {len(files_to_search)} files to look inside.")
 
 
         requestedSearches = self.descriptor["searchTypes"]
         typer.echo(f"Trying to search with {len(requestedSearches)} search types")
 
-        searchEngine = SearchMethods(requestedSearches, self.files_to_search)
+        searchEngine = SearchMethods(requestedSearches, files_to_search)
       
         print(f"Detected {len(searchEngine.detected_image_paths)} image paths")
 
@@ -29,12 +26,12 @@ class ImageFinder:
         if not img_dir_base.endswith("/"):
             img_dir_base += "/"
 
-        self.detected_image_paths = [img_dir_base + path[1::] for path in searchEngine.detected_image_paths]
+        detected_image_paths = [img_dir_base + path[1::] for path in searchEngine.detected_image_paths]
 
-        self.validate_image_paths()
-        if self.invalid_image_paths:
+        invalid_paths = self.validate_image_paths(detected_image_paths)
+        if invalid_paths:
             typer.echo("The following image paths are invalid:")
-            for path in self.invalid_image_paths:
+            for path in invalid_paths:
                 typer.echo(path)
             return 0
         
@@ -44,37 +41,46 @@ class ImageFinder:
         
 
 
-    def validate_image_paths(self) -> None:
+    def validate_image_paths(self, paths) -> list:
         typer.echo("Validating image paths")
-        for path in self.detected_image_paths:
+        invalid_paths = []
+        for path in paths:
             if not os.path.exists(path):
-                self.invalid_image_paths.append(path)
+                invalid_paths.append(path)
+        return invalid_paths
 
 
 
-    def populate_paths(self) -> None:
+    def populate_paths(self) -> list:
         active_dirs = self.descriptor["directories"]
+        files_to_search = []
 
         for dir in active_dirs:
-            self.dir_walk(dir["dir"], dir.pop("fileTypes", ["*"]))
+            target_dir = dir["dir"]
+            file_types = dir.pop("fileTypes", ["*"])
+            files_to_search += self.dir_walk(target_dir, file_types)
+        return files_to_search
 
 
-    def dir_walk(self, dir: str, file_types: list) -> None:
+    def dir_walk(self, dir: str, file_types: list) -> list:
         print("Looking in", dir)
         print("File types", file_types)
         curr_dir = os.listdir(dir)
+        files = []
+
         for file in curr_dir:
             file_path = dir + "/" + file
             if os.path.isdir(file_path):
-                self.dir_walk(file_path, file_types)
+                files += self.dir_walk(file_path, file_types)
             elif "*" in file_types:
-                self.files_to_search.append(file_path)
+                files.append(file_path)
             else:
                 if not "." in file:
                     continue
                 this_type = file.split(".")[-1]
                 if this_type in file_types:
-                    self.files_to_search.append(file_path)
+                    files.append(file_path)
+        return files
 
 
 

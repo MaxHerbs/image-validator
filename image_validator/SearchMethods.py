@@ -10,11 +10,11 @@ class SearchMethods:
         self.detected_image_paths = []
 
         supported_searches = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
-        
+        detected_paths = []
         for req in requested_searches:
           if req in supported_searches:
               try:
-                  getattr(self, req)()
+                  detected_paths += getattr(self, req)()
               except TypeError as e:
                   typer.echo(f"{req} is not a valid search type. Skipping.")
           else:
@@ -22,12 +22,12 @@ class SearchMethods:
 
 
 
-    def regex(self) -> None:
+    def regex(self) -> list:
         typer.echo("Searching for images paths using regex")
-
+        detected_paths = []
         for file in self.files_to_search:
             with open(file, "r") as f:
                 content = f.read()
                 matches = re.findall(re_img, content)
                 for match in matches:
-                    self.detected_image_paths.append(match)
+                    detected_paths.append(match)
