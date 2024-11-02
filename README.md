@@ -1,4 +1,5 @@
 # Image Validator
+![Tests](https://github.com/maxherbs/image-validator/actions/workflows/tests.yml/badge.svg)
 Finds image paths within a directory and validates the images exist.
 
 # Supported Search Types
