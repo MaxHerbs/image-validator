@@ -1,9 +1,7 @@
 import re
 import typer
 import os
-
-re_img = r'<img\s+[^>]*src="([^"]+)"'
-
+from .SearchMethods import SearchMethods
 
 class ImageFinder:
     files_to_search = []
@@ -21,27 +19,17 @@ class ImageFinder:
 
 
         requestedSearches = self.descriptor["searchTypes"]
-        supported_searches = dir(ImageFinder)  
         typer.echo(f"Trying to search with {len(requestedSearches)} search types")
 
-        
-
-        for req in requestedSearches:
-            print(req)
-            if req in supported_searches:
-                try:
-                    getattr(self, req)()
-                except TypeError as e:
-                    typer.echo(f"{req} is not a valid search type. Skipping.")
-            else:
-                typer.echo(f"Search type {req} not supported. Skipping.")
-        print(f"Detected {len(self.detected_image_paths)} image paths")
+        searchEngine = SearchMethods(requestedSearches, self.files_to_search)
+      
+        print(f"Detected {len(searchEngine.detected_image_paths)} image paths")
 
         img_dir_base = self.descriptor["imgbasePath"]
         if not img_dir_base.endswith("/"):
             img_dir_base += "/"
 
-        self.detected_image_paths = [img_dir_base + path[1::] for path in self.detected_image_paths]
+        self.detected_image_paths = [img_dir_base + path[1::] for path in searchEngine.detected_image_paths]
 
         self.validate_image_paths()
         if self.invalid_image_paths:
@@ -90,12 +78,3 @@ class ImageFinder:
 
 
 
-    def regex(self) -> None:
-        typer.echo("Searching for images paths using regex")
-
-        for file in self.files_to_search:
-            with open(file, "r") as f:
-                content = f.read()
-                matches = re.findall(re_img, content)
-                for match in matches:
-                    self.detected_image_paths.append(match)
