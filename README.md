@@ -1,10 +1,11 @@
 ![Tests](https://github.com/maxherbs/image-validator/actions/workflows/tests.yml/badge.svg)
 
 # Image Validator
-Finds image paths within a directory and validates the images exist.
+Finds image paths within a directory and validates the images exist. Designed for Jekyll sites
 
 # Supported Search Types
 1. Regex
+2. Frontmatter
 
 # Using the Script
 The module can be installed by running 
@@ -31,4 +32,4 @@ $ image-validator validate -p path/to/your/config
 ```
 
 # TODO:
-1. Add more search methods. The current regex approach limits the search to html-like images.
+1. Add more search methods.
