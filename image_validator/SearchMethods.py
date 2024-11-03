@@ -15,7 +15,10 @@ class SearchMethods:
           req = "search_" + req
           if req in supported_searches:
               try:
-                  self.detected_paths += getattr(self, req)(files_to_search)
+                  paths_found = getattr(self, req)(files_to_search)
+                  self.detected_paths += paths_found
+                  msg = f"{req.split('_')[1]} search completed. Found {len(paths_found)} paths."
+                  typer.echo(msg)
               except TypeError as e:
                   typer.echo(f"{req} is not a valid search type. Skipping.")
                   typer.echo(e)
@@ -35,21 +38,19 @@ class SearchMethods:
         return detected_paths
     
     def search_frontmatter(self, file_paths) -> list:
-        typer.echo("Searching for images paths in frontmatter")
+        typer.echo("Searching for images paths using frontmatter")
         detected_paths = []
         for file in file_paths:
             with open(file, "r") as f:
-                print("File: " + file)
                 frontMatter = ""
                 f.readline()
                 while True:
                     thisLine = f.readline().strip()
-                    print(thisLine)
                     if thisLine == "---":
                         break
                     frontMatter += thisLine + "\n"
                 serialisedFrontmatter = yaml.safe_load(frontMatter)
-                
+
                 if "background" in serialisedFrontmatter:
                     detected_paths.append(serialisedFrontmatter["background"])
 
